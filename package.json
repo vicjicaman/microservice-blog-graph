@@ -1,9 +1,9 @@
 {
-  "name": "@nebulario/microservice-auth-graph",
+  "name": "@nebulario/microservice-blog-graph",
   "version": "1.70.0-account-page-prod",
   "description": "GraphQL api for auth",
   "main": "src/index.js",
-  "repository": "github.com:vicjicaman/microservice-auth-graph.git",
+  "repository": "github.com:vicjicaman/microservice-blog-graph.git",
   "author": "Victor Jimenez <vic.jicama@gmail.com>",
   "license": "MIT",
   "dependencies": {
