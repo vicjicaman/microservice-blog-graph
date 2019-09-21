@@ -19,6 +19,7 @@ module.exports = {
   },
   resolve: {
     alias: {
+      Entities: path.resolve(__dirname, 'src/entities'),
       Model: path.resolve(__dirname, 'src/model'),
       Schema: path.resolve(__dirname, 'src/schema')
     },

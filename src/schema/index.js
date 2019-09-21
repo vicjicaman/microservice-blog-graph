@@ -1,14 +1,8 @@
-import * as Auth from './auth';
-import * as Protected from './protected';
-import * as Public from './public';
-const {
-  GraphQLDate,
-  GraphQLDateTime
-} = require('graphql-iso-date');
+import * as Article from "Schema/article";
+const { GraphQLDate, GraphQLDateTime } = require("graphql-iso-date");
 
-const schema = [...Protected.schema,
-  ...Public.schema,
-  ...Auth.schema,
+const schema = [
+  ...Article.schema,
   `
   scalar DateTime
   scalar Date
@@ -16,12 +10,12 @@ const schema = [...Protected.schema,
   type Viewer {
     id: ID
     username: String
-    protected: ProtectedQueries
+    article: ArticleQueries
   }
 
   type ViewerMutations {
     username: String
-    protected: ProtectedMutations
+    article: ArticleMutations
   }
 
   type Query {
@@ -29,43 +23,35 @@ const schema = [...Protected.schema,
   }
 
   type Mutation {
-    auth: AuthMutations
     viewer: ViewerMutations
   }
 `
 ];
 
-const getViewer = (cxt) => {
+const getViewer = cxt => {
   const username = cxt.request.user ? cxt.request.user.username : null;
   return {
     id: username,
     username
   };
-}
+};
 
 const resolvers = {
   Date: GraphQLDate,
   DateTime: GraphQLDateTime,
-  ...Auth.resolvers,
-  ...Public.resolvers,
-  ...Protected.resolvers,
+  ...Article.resolvers,
   Viewer: {
-    protected: viewer => viewer.username ? viewer : null
+    article: viewer => viewer
   },
   ViewerMutations: {
-    protected: viewer => viewer.username ? viewer : null
+    article: viewer => viewer
   },
   Query: {
     viewer: (parent, args, cxt) => getViewer(cxt)
   },
   Mutation: {
-    viewer: (parent, args, cxt) => getViewer(cxt),
-    auth: parent => ({})
+    viewer: (parent, args, cxt) => getViewer(cxt)
   }
 };
 
-
-export {
-  schema,
-  resolvers
-}
+export { schema, resolvers };
