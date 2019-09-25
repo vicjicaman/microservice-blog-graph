@@ -1,6 +1,6 @@
 {
   "name": "@nebulario/microservice-blog-graph",
-  "version": "1.70.4-blog-home-prod",
+  "version": "1.70.5-blog-home-prod",
   "description": "GraphQL api for auth",
   "main": "src/index.js",
   "repository": "github.com:vicjicaman/microservice-blog-graph.git",
