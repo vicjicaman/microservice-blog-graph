@@ -5,7 +5,7 @@ const schema = [
   `
 
   type ArticleQueries {
-    get (id: ID!): Article
+    get (url: String!): Article
     list : [Article],
     admin: ArticleAdminQueries
   }
@@ -15,7 +15,7 @@ const schema = [
 
 const resolvers = {
   ArticleQueries: {
-    get: async (viewer, { id }, cxt) => await Article.get({ id }, cxt),
+    get: async (viewer, { url }, cxt) => await Article.get(url, cxt),
     list: async (viewer, args, cxt) =>
       await Article.list({ status: "active" }, cxt),
     admin: viewer => ArticleAdmin.getAdmin(viewer)
