@@ -1,4 +1,4 @@
-import * as Article from "Model/article";
+import * as ArticleAdmin from "Model/article/admin";
 
 const schema = [
   `
@@ -11,7 +11,12 @@ const schema = [
 
   type ArticleAdminMutations {
     create ( input: ArticleInput! ): Article!
-    remove ( id: ID! ): ID
+    article ( id: ID! ) : ArticleEntityAdminMutations
+  }
+
+  type ArticleEntityAdminMutations {
+    edit ( input: ArticleInput! ): Article!
+    remove: ID
   }
 `
 ];
@@ -22,15 +27,19 @@ const resolvers = {
       { username },
       { input: { title, abstract, content } },
       cxt
-    ) => {
-      return await Article.create(
+    ) =>
+      await ArticleAdmin.create(
         { title, authorid: username, abstract, content },
         cxt
-      );
-    },
-    remove: async ({ username }, { id }, cxt) => {
-      return await Article.remove({ authorid: username, id }, cxt);
-    }
+      ),
+    article: async ({ username }, { id }, cxt) =>
+      await ArticleAdmin.get(id, cxt)
+  },
+  ArticleEntityAdminMutations: {
+    edit: async (article, { input: { title, abstract, content } }, cxt) =>
+      await ArticleAdmin.edit(article, { title, abstract, content }, cxt),
+    remove: async (article, args, cxt) =>
+      await ArticleAdmin.remove(article, cxt)
   }
 };
 
