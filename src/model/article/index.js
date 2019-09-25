@@ -9,8 +9,8 @@ const list = async ({ id }, cxt) => {
   return res;
 };
 
-const create = async ({ title, abstract, authorid, content, status }, cxt) => {
-  return await Article.create({ title, abstract, authorid, content, status });
+const create = async ({ title, abstract, authorid, content }, cxt) => {
+  return await Article.create({ title, abstract, authorid, content, status:"draft" });
 };
 
 const remove = async ({ id, authorid }, cxt) => {

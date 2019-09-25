@@ -1,5 +1,6 @@
 import * as Queries from "./queries";
 import * as Mutations from "./mutations";
+import * as Admin from './admin'
 
 const schema = [
   `
@@ -14,13 +15,15 @@ const schema = [
   }
   `,
   ...Queries.schema,
-  ...Mutations.schema
+  ...Mutations.schema,
+  ...Admin.schema
 ];
 
 const resolvers = {
   ...{},
   ...Queries.resolvers,
-  ...Mutations.resolvers
+  ...Mutations.resolvers,
+  ...Admin.resolvers
 };
 
 export { schema, resolvers };

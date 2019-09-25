@@ -1,11 +1,13 @@
 import * as Article from "Model/article";
+import * as ArticleAdmin from "Model/article/admin";
 
 const schema = [
   `
 
   type ArticleQueries {
     get (id: ID!): Article
-    list : [Article]
+    list : [Article],
+    admin: ArticleAdminQueries
   }
 
 `
@@ -14,7 +16,9 @@ const schema = [
 const resolvers = {
   ArticleQueries: {
     get: async (viewer, { id }, cxt) => await Article.getById({ id }, cxt),
-    list: async (viewer, args, cxt) => await Article.list({}, cxt)
+    list: async (viewer, args, cxt) =>
+      await Article.list({ status: "active" }, cxt),
+    admin: viewer => ArticleAdmin.getAdmin(viewer)
   }
 };
 

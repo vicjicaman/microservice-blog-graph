@@ -45,7 +45,7 @@ const resolvers = {
     articles: viewer => viewer
   },
   ViewerMutations: {
-    articles: viewer => (viewer.id ? viewer : null)
+    articles: viewer => viewer
   },
   Query: {
     viewer: (parent, args, cxt) => getViewer(cxt)
