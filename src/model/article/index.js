@@ -1,7 +1,13 @@
 import { Article } from "Entities/article";
 
 const get = async (url, cxt) => {
-  return await Article.findOne({ url });
+  const res = await Article.findOne({ url });
+
+  if (res.status !== "active") {
+    return null;
+  }
+
+  return res;
 };
 
 const list = async ({ status }, cxt) => {
