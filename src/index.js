@@ -6,7 +6,8 @@ const { makeExecutableSchema } = require("graphql-tools");
 const { schema: rootSchema, resolvers: rootResolvers } = require("./schema");
 
 import * as AuthLib from "@nebulario/microservice-auth-common";
-
+import * as GraphCommon from "@nebulario/microservice-graph-common";
+import * as Utils from "@nebulario/microservice-utils";
 
 const BLOG_DATA_INTERNAL_URL = process.env["BLOG_DATA_INTERNAL_URL"];
 const BLOG_ROUTE_GRAPH = process.env["BLOG_ROUTE_GRAPH"];
@@ -18,47 +19,9 @@ const AUTH_SECRET_PASSWORD_CACHE = process.env["AUTH_SECRET_PASSWORD_CACHE"];
 const AUTH_INTERNAL_HOST_CACHE = process.env["AUTH_INTERNAL_HOST_CACHE"];
 const AUTH_INTERNAL_PORT_CACHE = process.env["AUTH_INTERNAL_PORT_CACHE"];
 
-
-export function wait(timeout) {
-  return new Promise(resolve => {
-    setTimeout(() => {
-      resolve();
-    }, timeout);
-  });
-}
-
 (async () => {
-  let db = null;
-  let connected = false;
-
-  while (!connected) {
-    try {
-      console.log("Connect to data service... " + BLOG_DATA_INTERNAL_URL);
-      mongoose.connect("mongodb://" + BLOG_DATA_INTERNAL_URL, {
-        useNewUrlParser: true,
-        reconnectTries: 3,
-        reconnectInterval: 100
-      });
-
-      mongoose.connection.on("disconnected", () => {
-        console.log("-> lost connection");
-      });
-      mongoose.connection.on("reconnect", () => {
-        console.log("-> reconnected");
-      });
-      mongoose.connection.on("connected", () => {
-        console.log("-> connected");
-      });
-      mongoose.connection.on("reconnectFailed", () => {
-        console.log("-> gave up reconnecting");
-        process.exit(17);
-      });
-      connected = true;
-    } catch (e) {
-      console.log("DATA_ERROR:  " + e.toString());
-      await wait(2500);
-    }
-  }
+  const cxt = { mongoose };
+  GraphCommon.Data.connect({ mongoose, url: BLOG_DATA_INTERNAL_URL }, cxt);
 
   var app = express();
   var { passport } = AuthLib.init({
@@ -90,26 +53,13 @@ export function wait(timeout) {
       }
     }))
   );
-  app.listen(BLOG_INTERNAL_PORT_GRAPH, () => console.log("Blog GraphQL running..."));
+  app.listen(BLOG_INTERNAL_PORT_GRAPH, () =>
+    console.log("Blog GraphQL running...")
+  );
 })();
 
-function shutdown(signal) {
-  return async function(err) {
-    console.log(`${signal}...`);
-    if (err) {
-      console.error(err.stack || err);
-    }
-
-    console.log("Closing connection");
-    mongoose.connection.close();
-
-    setTimeout(() => {
-      process.exit(err ? 1 : 0);
-    }, 500).unref();
-  };
-}
-
-process
-  .on("SIGTERM", shutdown("SIGTERM"))
-  .on("SIGINT", shutdown("SIGINT"))
-  .on("uncaughtException", shutdown("uncaughtException"));
+Utils.Process.shutdown(signal => {
+  console.log("Closing connection");
+  mongoose.connection.close();
+  console.log("Shutdown " + signal);
+});

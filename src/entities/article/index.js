@@ -1,10 +1,26 @@
 const mongoose = require("mongoose");
 
 var schema = new mongoose.Schema({
-  title: String,
-  abstract: String,
-  content: String,
-  authorid: String,
+  title: {
+    type: String,
+    required: true
+  },
+  abstract: {
+    type: String,
+    required: true
+  },
+  content: {
+    type: String,
+    required: true
+  },
+  status: {
+    type: String,
+    required: true
+  },
+  authorid: {
+    type: String,
+    required: true
+  },
   created_at: Date
 });
 

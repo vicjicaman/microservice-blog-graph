@@ -2,18 +2,30 @@ import * as Article from "Model/article";
 
 const schema = [
   `
+
+  input ArticleInput {
+    title: String!
+    abstract: String!
+    content: String!
+    status: String!
+  }
+
   type ArticleMutations {
-    create (title: String!, abstract: String!, content: String! ): Article!
-    remove (id: ID! ): ID
+    create ( input: ArticleInput! ): Article!
+    remove ( id: ID! ): ID
   }
 `
 ];
 
 const resolvers = {
   ArticleMutations: {
-    create: async ({ username }, { title, abstract, content }, cxt) => {
+    create: async (
+      { username },
+      { input: { title, abstract, content, status } },
+      cxt
+    ) => {
       return await Article.create(
-        { title, authorid: username, abstract, content },
+        { title, authorid: username, abstract, content, status },
         cxt
       );
     },

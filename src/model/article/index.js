@@ -5,11 +5,12 @@ const getById = async ({ id }, cxt) => {
 };
 
 const list = async ({ id }, cxt) => {
-  return await Article.find({});
+  const res = await Article.find({});
+  return res;
 };
 
-const create = async ({ title, abstract, authorid, content }, cxt) => {
-  return await Article.create({ title, abstract, authorid, content });
+const create = async ({ title, abstract, authorid, content, status }, cxt) => {
+  return await Article.create({ title, abstract, authorid, content, status });
 };
 
 const remove = async ({ id, authorid }, cxt) => {

@@ -10,12 +10,13 @@ const schema = [
   type Viewer {
     id: ID
     username: String
-    article: ArticleQueries
+    articles: ArticleQueries
   }
 
   type ViewerMutations {
+    id: ID
     username: String
-    article: ArticleMutations
+    articles: ArticleMutations
   }
 
   type Query {
@@ -41,10 +42,10 @@ const resolvers = {
   DateTime: GraphQLDateTime,
   ...Article.resolvers,
   Viewer: {
-    article: viewer => viewer
+    articles: viewer => viewer
   },
   ViewerMutations: {
-    article: viewer => viewer
+    articles: viewer => (viewer.id ? viewer : null)
   },
   Query: {
     viewer: (parent, args, cxt) => getViewer(cxt)
