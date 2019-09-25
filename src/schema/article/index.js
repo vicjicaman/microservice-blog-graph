@@ -9,6 +9,7 @@ const schema = [
     title: String!
     abstract: String!
     content: String!
+    url: String!
     status: String!
     authorid: String!
     created_at: DateTime!
