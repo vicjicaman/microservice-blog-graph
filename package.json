@@ -1,6 +1,6 @@
 {
   "name": "@nebulario/microservice-blog-graph",
-  "version": "1.70.0-master",
+  "version": "1.70.0-data-reconnect-realm-prod",
   "description": "GraphQL api for auth",
   "main": "src/index.js",
   "repository": "github.com:vicjicaman/microservice-blog-graph.git",
@@ -10,7 +10,7 @@
     "@babel/runtime": "^7.6.0",
     "@babel/runtime-corejs3": "^7.6.0",
     "@nebulario/microservice-auth-common": "1.70.1-master",
-    "@nebulario/microservice-graph-common": "link:./../microservice-graph-common",
+    "@nebulario/microservice-graph-common": "1.70.0-data-reconnect-realm-prod",
     "@nebulario/microservice-utils": "1.70.0-master",
     "dotenv": "^7.0.0",
     "express": "^4.16.4",
