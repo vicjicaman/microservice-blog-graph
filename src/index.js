@@ -21,7 +21,10 @@ const AUTH_INTERNAL_PORT_CACHE = process.env["AUTH_INTERNAL_PORT_CACHE"];
 
 (async () => {
   const cxt = { mongoose };
-  GraphCommon.Data.connect({ mongoose, url: BLOG_DATA_INTERNAL_URL }, cxt);
+  await GraphCommon.Data.connect(
+    { mongoose, url: BLOG_DATA_INTERNAL_URL },
+    cxt
+  );
 
   var app = express();
   var { passport } = AuthLib.init({
