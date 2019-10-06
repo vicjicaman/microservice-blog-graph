@@ -1,7 +1,7 @@
-import { Article } from "Entities/article";
+import * as Article from "Entities/article";
 
 const get = async (url, cxt) => {
-  const res = await Article.findOne({ url });
+  const res = await Article.Model.findOne({ url });
 
   if (res.status !== "active") {
     return null;
@@ -11,8 +11,7 @@ const get = async (url, cxt) => {
 };
 
 const list = async ({ status }, cxt) => {
-  const res = await Article.find({ status });
-  return res;
+  return await Article.Model.find({ status });
 };
 
 export { get, list };

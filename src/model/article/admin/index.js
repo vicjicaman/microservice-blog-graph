@@ -1,20 +1,22 @@
-import { Article } from "Entities/article";
+import * as Article from "Entities/article";
+import ArticleConfig from "Model/article/config";
+import * as Pkg from "Pkg";
 
 const getAdmin = async viewer =>
   viewer.username === "vicjicama" ? viewer : null;
 
 const get = async (id, cxt) => {
-  return await Article.findById(id);
+  return await Article.Model.findById(id);
 };
 
 const list = async ({}, cxt) => {
-  const res = await Article.find({});
+  const res = await Article.Model.find({});
 
   return res;
 };
 
 const create = async ({ url, title, abstract, authorid, content }, cxt) => {
-  return await Article.create({
+  return await Article.Model.create({
     title,
     url,
     abstract,
@@ -26,7 +28,14 @@ const create = async ({ url, title, abstract, authorid, content }, cxt) => {
 
 const publish = async (article, cxt) => {
   article.status = "active";
-  return await article.save();
+  const mod = await article.save();
+  const payload = { type: "blog.article", article: Article.Serialize.Complete.serialize(mod) };
+  Pkg.Queue.send(
+    ArticleConfig.StaticContentQueueID,
+    JSON.stringify(payload),
+    cxt
+  );
+  return mod;
 };
 
 const inactive = async (article, cxt) => {
