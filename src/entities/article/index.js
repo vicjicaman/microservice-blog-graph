@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+import * as Serialize from './serialize'
 
 var schema = new mongoose.Schema({
   title: {
@@ -36,5 +37,7 @@ schema.pre("save", async function(next) {
   next();
 });
 
-const Article = mongoose.model("Article", schema);
-export { Article };
+
+
+const Model = mongoose.model("Article", schema);
+export { Model, Serialize };

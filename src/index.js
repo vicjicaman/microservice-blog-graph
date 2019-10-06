@@ -8,8 +8,9 @@ const { schema: rootSchema, resolvers: rootResolvers } = require("./schema");
 import * as AuthLib from "@nebulario/microservice-auth-common";
 import * as GraphCommon from "@nebulario/microservice-graph-common";
 import * as Utils from "@nebulario/microservice-utils";
+import * as Pkg from "Pkg";
+import ArticleConfig from "Model/article/config";
 
-const BLOG_DATA_INTERNAL_URL = process.env["BLOG_DATA_INTERNAL_URL"];
 const BLOG_ROUTE_GRAPH = process.env["BLOG_ROUTE_GRAPH"];
 const BLOG_INTERNAL_PORT_GRAPH = process.env["BLOG_INTERNAL_PORT_GRAPH"];
 
@@ -19,12 +20,57 @@ const AUTH_SECRET_PASSWORD_CACHE = process.env["AUTH_SECRET_PASSWORD_CACHE"];
 const AUTH_INTERNAL_HOST_CACHE = process.env["AUTH_INTERNAL_HOST_CACHE"];
 const AUTH_INTERNAL_PORT_CACHE = process.env["AUTH_INTERNAL_PORT_CACHE"];
 
+const RESOURCES_DATA_INTERNAL_URL = process.env["RESOURCES_DATA_INTERNAL_URL"];
+
+const RESOURCES_QUEUE_SECRET_USER = process.env["RESOURCES_QUEUE_SECRET_USER"];
+const RESOURCES_QUEUE_SECRET_PASSWORD =
+  process.env["RESOURCES_QUEUE_SECRET_PASSWORD"];
+const RESOURCES_QUEUE_INTERNAL_HOST =
+  process.env["RESOURCES_QUEUE_INTERNAL_HOST"];
+const RESOURCES_QUEUE_INTERNAL_PORT =
+  process.env["RESOURCES_QUEUE_INTERNAL_PORT"];
+
+const RESOURCES_CACHE_INTERNAL_HOST =
+  process.env["RESOURCES_CACHE_INTERNAL_HOST"];
+const RESOURCES_CACHE_INTERNAL_PORT =
+  process.env["RESOURCES_CACHE_INTERNAL_PORT"];
+const RESOURCES_CACHE_SECRET_PASSWORD =
+  process.env["RESOURCES_CACHE_SECRET_PASSWORD"];
+
 (async () => {
-  const cxt = { mongoose };
-  await GraphCommon.Data.connect(
-    { mongoose, url: BLOG_DATA_INTERNAL_URL },
-    cxt
+  await GraphCommon.Data.connect({
+    mongoose,
+    url: RESOURCES_DATA_INTERNAL_URL
+  });
+
+  const queue = await Pkg.Queue.connect(
+    [
+      {
+        id: ArticleConfig.StaticContentQueueID,
+        name: "UTILITIES_STATIC_CONTENT_GENERATOR_QUEUE"
+      }
+    ],
+    {
+      host: RESOURCES_QUEUE_INTERNAL_HOST,
+      port: RESOURCES_QUEUE_INTERNAL_PORT,
+      user: RESOURCES_QUEUE_SECRET_USER,
+      password: RESOURCES_QUEUE_SECRET_PASSWORD
+    }
   );
+
+  const cache = await Pkg.Cache.connect({
+    host: RESOURCES_CACHE_INTERNAL_HOST,
+    port: RESOURCES_CACHE_INTERNAL_PORT,
+    password: RESOURCES_CACHE_SECRET_PASSWORD
+  });
+
+  const cxt = {
+    services: {
+      data: mongoose,
+      queue,
+      cache
+    }
+  };
 
   var app = express();
   var { passport } = AuthLib.init({
@@ -52,14 +98,14 @@ const AUTH_INTERNAL_PORT_CACHE = process.env["AUTH_INTERNAL_PORT_CACHE"];
       context: {
         passport,
         request,
-        services: {}
+        ...cxt
       }
     }))
   );
   app.listen(BLOG_INTERNAL_PORT_GRAPH, () =>
-    console.log("Blog GraphQL running...")
+    console.log(new Date().toString(), "Blog GraphQL running...")
   );
-})();
+})().catch(e => console.log(e.toString()));
 
 Utils.Process.shutdown(signal => {
   console.log("Closing connection");

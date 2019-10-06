@@ -21,7 +21,8 @@ module.exports = {
     alias: {
       Entities: path.resolve(__dirname, 'src/entities'),
       Model: path.resolve(__dirname, 'src/model'),
-      Schema: path.resolve(__dirname, 'src/schema')
+      Schema: path.resolve(__dirname, 'src/schema'),
+      Pkg: path.resolve(__dirname, 'pkg')
     },
     modules: [
       path.resolve(__dirname, 'src'),
