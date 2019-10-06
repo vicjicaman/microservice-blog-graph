@@ -1,4 +1,6 @@
 import * as ArticleAdmin from "Model/article/admin";
+import * as ArticleCache from "../cache";
+import * as Pkg from "Pkg";
 
 const schema = [
   `
@@ -41,8 +43,13 @@ const resolvers = {
         { title, authorid: username, abstract, content, url },
         cxt
       ),
-    article: async ({ username }, { id }, cxt) =>
-      await ArticleAdmin.get(id, cxt)
+    article: async ({ username }, { id }, cxt) => {
+      const res = await ArticleAdmin.get(id, cxt);
+      if (res) {
+        await Pkg.Cache.remove(ArticleCache.Keys.url(res.url), cxt);
+      }
+      return res;
+    }
   },
   ArticleEntityAdminMutations: {
     publish: async (article, args, cxt) =>

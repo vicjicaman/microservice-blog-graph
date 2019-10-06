@@ -1,7 +1,7 @@
-import * as ArticleEntity from "Entities/article";
 import * as Article from "Model/article";
 import * as ArticleAdmin from "Model/article/admin";
 import * as Pkg from "Pkg";
+import * as ArticleCache from "./cache";
 
 const schema = [
   `
@@ -15,28 +15,25 @@ const schema = [
 `
 ];
 
-const getListKey = (name, subset) => "Articles/List/" + name + "/" + subset;
-const getURLKey = url => "Articles/URL/" + url;
-
 const resolvers = {
   ArticleQueries: {
     admin: viewer => ArticleAdmin.getAdmin(viewer),
     get: async (viewer, { url }, cxt) =>
       await Pkg.Cache.object(
-        getURLKey(url),
+        ArticleCache.Keys.url(url),
         {
           params: { url },
           getter: ({ url }, cxt) => Article.get(url, cxt),
-          serializer: ArticleEntity.Serialize.Complete
+          serializer: ArticleCache.Serializers.Complete
         },
         cxt
       ),
     list: async (viewer, args, cxt) =>
       await Pkg.Cache.list(
-        getListKey("main", "P0"),
+        ArticleCache.Keys.list("main", "P0"),
         {
           getter: (params, cxt) => Article.list({ status: "active" }, cxt),
-          serializer: ArticleEntity.Serialize.List
+          serializer: ArticleCache.Serializers.List
         },
         cxt
       )

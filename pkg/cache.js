@@ -19,7 +19,7 @@ export const connect = async ({ host, port, password }) => {
   return { client };
 };
 
-export const object = async (key, { getter, serializer }, cxt) => {
+export const object = async (key, { params, getter, serializer }, cxt) => {
   const {
     services: {
       cache: { client: cache }
@@ -31,7 +31,7 @@ export const object = async (key, { getter, serializer }, cxt) => {
   if (obj) {
     return serializer.deserialize(obj);
   } else {
-    const res = await getter(cxt);
+    const res = await getter(params, cxt);
 
     const mapped = serializer.serialize(res);
     cache.hmset(key, mapped);
@@ -39,21 +39,27 @@ export const object = async (key, { getter, serializer }, cxt) => {
   }
 };
 
-export const list = async (key, { getter, serializer }, cxt) => {
+export const list = async (key, { params, getter, serializer }, cxt) => {
   const {
     services: {
       cache: { client: cache }
     }
   } = cxt;
 
-  const list = await cache.lrange(key, 0, -1);
+  const exist = await cache.exists(key);
 
-  if (list) {
+  if (exist) {
+    const list = await cache.lrange(key, 0, -1);
     return list.map(serializer.deserialize);
   } else {
-    const res = await getter(cxt);
+    const res = await getter(params, cxt);
+    if (res.length === 0) {
+      return res;
+    }
+
     const mapped = res.map(serializer.serialize);
-    await cache.rpush(key, mapped);
+    mapped.unshift(key);
+    await cache.rpush(mapped);
     return res;
   }
 };
@@ -64,6 +70,5 @@ export const remove = async (key, cxt) => {
       cache: { client: cache }
     }
   } = cxt;
-
   await cache.del(key);
 };

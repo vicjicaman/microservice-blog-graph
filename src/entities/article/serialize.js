@@ -16,12 +16,14 @@ const Complete = {
     url,
     status,
     authorid,
-    created_at: created_at.toString()
+    created_at: created_at.toJSON()
   }),
-  deserialize: obj => ({
-    ...obj,
-    created_at: new Date(obj.created_at)
-  })
+  deserialize: obj => {
+    return {
+      ...obj,
+      created_at: new Date(obj.created_at)
+    };
+  }
 };
 
 const List = {
@@ -33,7 +35,7 @@ const List = {
       url,
       status,
       authorid,
-      created_at: created_at.toString()
+      created_at: created_at.toJSON()
     }),
   deserialize: ostr => {
     const obj = JSON.parse(ostr);
