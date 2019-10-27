@@ -686,14 +686,17 @@
     redis "^2.8.0"
     redis-parser "^3.0.0"
 
-"@nebulario/microservice-graph-common@1.70.0-rm-cache-vol-prod":
-  version "1.70.0-rm-cache-vol-prod"
-  resolved "https://registry.yarnpkg.com/@nebulario/microservice-graph-common/-/microservice-graph-common-1.70.0-rm-cache-vol-prod.tgz#7206e8871d6884bfc9ec8e571813394eab4bffda"
-  integrity sha512-q2jrbOG2w1a4cC6DitgObLark+kVVrpnM3ehs/AkGHRA5jJqflbxr3aZTvsaPUnFguQq4Hp6slMD6WXnaAs/SQ==
+"@nebulario/microservice-graph-common@1.70.2-master":
+  version "1.70.2-master"
+  resolved "https://registry.yarnpkg.com/@nebulario/microservice-graph-common/-/microservice-graph-common-1.70.2-master.tgz#02dba482046303c28496c071f14c034a20c9d7b1"
+  integrity sha512-xFsn8czX7yATTghNzPZ9Ri0XlGjtHMJYzdvwy7Gi7+4qJCopFY8qrC7L7kKxR4DPJY0nmF5N21EGlKvPoblBTg==
   dependencies:
     "@babel/runtime" "^7.6.0"
     "@babel/runtime-corejs3" "^7.6.0"
     "@nebulario/microservice-utils" "1.70.0-master"
+    amqplib "^0.5.5"
+    async-redis "^1.1.7"
+    uuid "^3.3.3"
 
 "@nebulario/microservice-utils@1.70.0-master":
   version "1.70.0-master"
@@ -4851,7 +4854,7 @@ utils-merge@1.0.1:
   resolved "https://registry.yarnpkg.com/utils-merge/-/utils-merge-1.0.1.tgz#9f95710f50a267947b2ccc124741c1028427e713"
   integrity sha1-n5VxD1CiZ5R7LMwSR0HBAoQn5xM=
 
-uuid@^3.1.0:
+uuid@^3.1.0, uuid@^3.3.3:
   version "3.3.3"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.3.3.tgz#4568f0216e78760ee1dbf3a4d2cf53e224112866"
   integrity sha512-pW0No1RGHgzlpHJO1nsVrHKpOEIxkGg1xB+v0ZmdNH5OAeAwzAVrCnI2/6Mtx+Uys6iaylxa+D3g4j63IKKjSQ==
