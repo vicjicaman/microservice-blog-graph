@@ -698,9 +698,17 @@
     async-redis "^1.1.7"
     uuid "^3.3.3"
 
-"@nebulario/microservice-logger@link:../microservice-logger":
-  version "0.0.0"
-  uid ""
+"@nebulario/microservice-logger@1.70.0-email-validation-prod":
+  version "1.70.0-email-validation-prod"
+  resolved "https://registry.yarnpkg.com/@nebulario/microservice-logger/-/microservice-logger-1.70.0-email-validation-prod.tgz#178feb837942396e087d69952e528416db2b5e94"
+  integrity sha512-n4b/Dg/oC5C3tNeXIMm6DULkYld3IYfLj5q4t+otWHjYPXOKLTHvs+7ILPJ4v2WtVF/jdv9aKdks/+jqHql3Yw==
+  dependencies:
+    "@babel/runtime" "^7.6.0"
+    "@babel/runtime-corejs3" "^7.6.0"
+    express-request-id "^1.4.1"
+    morgan "^1.9.1"
+    winston "^3.2.0"
+    winston-daily-rotate-file "^4.2.1"
 
 "@nebulario/microservice-utils@1.70.0-master":
   version "1.70.0-master"
