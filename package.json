@@ -1,6 +1,6 @@
 {
   "name": "@nebulario/microservice-blog-graph",
-  "version": "1.70.0-email-validation-prod",
+  "version": "1.70.4-master",
   "description": "GraphQL api for auth",
   "main": "src/index.js",
   "repository": "github.com:vicjicaman/microservice-blog-graph.git",
@@ -12,7 +12,7 @@
     "@nebulario/microservice-auth-common": "1.70.1-master",
     "@nebulario/microservice-graph-common": "1.70.3-master",
     "@nebulario/microservice-utils": "1.70.0-master",
-    "@nebulario/microservice-logger": "1.70.0-email-validation-prod",
+    "@nebulario/microservice-logger": "1.70.1-master",
     "amqplib": "^0.5.5",
     "async-redis": "^1.1.7",
     "dotenv": "^7.0.0",
