@@ -5,12 +5,14 @@ const graphqlHTTP = require("express-graphql");
 const { makeExecutableSchema } = require("graphql-tools");
 const { schema: rootSchema, resolvers: rootResolvers } = require("./schema");
 
+import * as Logger from "@nebulario/microservice-logger";
 import * as AuthLib from "@nebulario/microservice-auth-common";
 import * as GraphCommon from "@nebulario/microservice-graph-common";
 import * as Utils from "@nebulario/microservice-utils";
 import * as Pkg from "Pkg";
 import ArticleConfig from "Model/article/config";
 
+const ENV_MODE = process.env["ENV_MODE"];
 const BLOG_ROUTE_GRAPH = process.env["BLOG_ROUTE_GRAPH"];
 const BLOG_INTERNAL_PORT_GRAPH = process.env["BLOG_INTERNAL_PORT_GRAPH"];
 
@@ -41,6 +43,14 @@ const RESOURCES_CACHE_INTERNAL_PORT =
 const RESOURCES_CACHE_SECRET_PASSWORD =
   process.env["RESOURCES_CACHE_SECRET_PASSWORD"];
 
+const logger = Logger.create({ path: "/var/log/app", env: ENV_MODE });
+const cxt = {
+  services: {
+    data: mongoose
+  },
+  logger
+};
+
 (async () => {
   await GraphCommon.Data.connect({
     mongoose,
@@ -50,7 +60,7 @@ const RESOURCES_CACHE_SECRET_PASSWORD =
     password: RESOURCES_DATA_SECRET_PASSWORD
   });
 
-  const queue = await Pkg.Queue.connect(
+  cxt.services.queue = await Pkg.Queue.connect(
     [
       {
         id: ArticleConfig.StaticContentQueueID,
@@ -65,21 +75,15 @@ const RESOURCES_CACHE_SECRET_PASSWORD =
     }
   );
 
-  const cache = await Pkg.Cache.connect({
+  cxt.services.cache = await Pkg.Cache.connect({
     host: RESOURCES_CACHE_INTERNAL_HOST,
     port: RESOURCES_CACHE_INTERNAL_PORT,
     password: RESOURCES_CACHE_SECRET_PASSWORD
   });
 
-  const cxt = {
-    services: {
-      data: mongoose,
-      queue,
-      cache
-    }
-  };
-
   var app = express();
+  Logger.Service.use(app, cxt);
+
   var { passport } = AuthLib.init({
     app,
     cache: {
@@ -110,12 +114,11 @@ const RESOURCES_CACHE_SECRET_PASSWORD =
     }))
   );
   app.listen(BLOG_INTERNAL_PORT_GRAPH, () =>
-    console.log(new Date().toString(), "Blog GraphQL running...")
+    cxt.logger.info("service.running", { port: BLOG_INTERNAL_PORT_GRAPH })
   );
-})().catch(e => console.log(e.toString()));
+})().catch(e => cxt.logger.error("service.error", { error: e.toString() }));
 
 Utils.Process.shutdown(signal => {
-  console.log("Closing connection");
   mongoose.connection.close();
-  console.log("Shutdown " + signal);
+  cxt.logger.info("service.shutdown", { signal });
 });
