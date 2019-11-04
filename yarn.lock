@@ -698,10 +698,10 @@
     async-redis "^1.1.7"
     uuid "^3.3.3"
 
-"@nebulario/microservice-logger@1.70.0-email-validation-prod":
-  version "1.70.0-email-validation-prod"
-  resolved "https://registry.yarnpkg.com/@nebulario/microservice-logger/-/microservice-logger-1.70.0-email-validation-prod.tgz#178feb837942396e087d69952e528416db2b5e94"
-  integrity sha512-n4b/Dg/oC5C3tNeXIMm6DULkYld3IYfLj5q4t+otWHjYPXOKLTHvs+7ILPJ4v2WtVF/jdv9aKdks/+jqHql3Yw==
+"@nebulario/microservice-logger@1.70.1-master":
+  version "1.70.1-master"
+  resolved "https://registry.yarnpkg.com/@nebulario/microservice-logger/-/microservice-logger-1.70.1-master.tgz#c56c0124d8138aa663da201fb29f6a0391fdf64c"
+  integrity sha512-Fih2Ei97NRAj8TMbWBkE9eVjbZp2hpJGvBWA3ePDuztpTCSrK0UAADvt0SsVxUTmmmN/ho+v9hxP65Ja8nwqxA==
   dependencies:
     "@babel/runtime" "^7.6.0"
     "@babel/runtime-corejs3" "^7.6.0"
