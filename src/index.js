@@ -13,6 +13,8 @@ import * as Pkg from "Pkg";
 import ArticleConfig from "Model/article/config";
 
 const ENV_MODE = process.env["ENV_MODE"];
+const ENV_LOG_FOLDER = process.env["ENV_LOG_FOLDER"];
+
 const BLOG_ROUTE_GRAPH = process.env["BLOG_ROUTE_GRAPH"];
 const BLOG_INTERNAL_PORT_GRAPH = process.env["BLOG_INTERNAL_PORT_GRAPH"];
 
@@ -43,24 +45,34 @@ const RESOURCES_CACHE_INTERNAL_PORT =
 const RESOURCES_CACHE_SECRET_PASSWORD =
   process.env["RESOURCES_CACHE_SECRET_PASSWORD"];
 
-const logger = Logger.create({ path: "/var/log/app", env: ENV_MODE });
 const cxt = {
+  env: {
+    mode: ENV_MODE,
+    logs: {
+      folder: ENV_LOG_FOLDER
+    }
+  },
   services: {
     data: mongoose
   },
-  logger
+  logger: null
 };
 
-(async () => {
-  await GraphCommon.Data.connect({
-    mongoose,
-    url: RESOURCES_DATA_INTERNAL_URL,
-    database: RESOURCES_DATA_NAME,
-    user: RESOURCES_DATA_SECRET_USER,
-    password: RESOURCES_DATA_SECRET_PASSWORD
-  });
+cxt.logger = Logger.create({ path: ENV_LOG_FOLDER, env: ENV_MODE }, cxt);
 
-  cxt.services.queue = await Pkg.Queue.connect(
+(async () => {
+  await GraphCommon.Data.connect(
+    {
+      mongoose,
+      url: RESOURCES_DATA_INTERNAL_URL,
+      database: RESOURCES_DATA_NAME,
+      user: RESOURCES_DATA_SECRET_USER,
+      password: RESOURCES_DATA_SECRET_PASSWORD
+    },
+    cxt
+  );
+
+  /*cxt.services.queue = await Pkg.Queue.connect(
     [
       {
         id: ArticleConfig.StaticContentQueueID,
@@ -73,28 +85,54 @@ const cxt = {
       user: RESOURCES_QUEUE_SECRET_USER,
       password: RESOURCES_QUEUE_SECRET_PASSWORD
     }
+  );*/
+
+  cxt.services.queue = await GraphCommon.Queue.connect(
+    "blog",
+    {
+      queues: [
+        {
+          name: "UTILITIES_STATIC_CONTENT_GENERATOR_QUEUE",
+          type: "exchange",
+          mode: "fanout"
+        }
+      ]
+    },
+    {
+      host: RESOURCES_QUEUE_INTERNAL_HOST,
+      port: RESOURCES_QUEUE_INTERNAL_PORT,
+      user: RESOURCES_QUEUE_SECRET_USER,
+      password: RESOURCES_QUEUE_SECRET_PASSWORD
+    },
+    cxt
   );
 
-  cxt.services.cache = await Pkg.Cache.connect({
-    host: RESOURCES_CACHE_INTERNAL_HOST,
-    port: RESOURCES_CACHE_INTERNAL_PORT,
-    password: RESOURCES_CACHE_SECRET_PASSWORD
-  });
+  cxt.services.cache = await Pkg.Cache.connect(
+    {
+      host: RESOURCES_CACHE_INTERNAL_HOST,
+      port: RESOURCES_CACHE_INTERNAL_PORT,
+      password: RESOURCES_CACHE_SECRET_PASSWORD
+    },
+    cxt
+  );
 
   var app = express();
   Logger.Service.use(app, cxt);
 
-  var { passport } = AuthLib.init({
-    app,
-    cache: {
-      host: AUTH_INTERNAL_HOST_CACHE,
-      port: AUTH_INTERNAL_PORT_CACHE,
-      secret: AUTH_SECRET_PASSWORD_CACHE
+  var { passport } = AuthLib.init(
+    {
+      app,
+      cache: {
+        host: AUTH_INTERNAL_HOST_CACHE,
+        port: AUTH_INTERNAL_PORT_CACHE,
+        secret: AUTH_SECRET_PASSWORD_CACHE
+      },
+      accounts: {
+        url: AUTH_ACCOUNT_INTERNAL_URL_GRAPH
+      }
     },
-    accounts: {
-      url: AUTH_ACCOUNT_INTERNAL_URL_GRAPH
-    }
-  });
+    cxt
+  );
 
   const schema = makeExecutableSchema({
     typeDefs: rootSchema,

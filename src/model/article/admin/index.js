@@ -29,12 +29,12 @@ const create = async ({ url, title, abstract, authorid, content }, cxt) => {
 const publish = async (article, cxt) => {
   article.status = "active";
   const mod = await article.save();
-  const payload = { type: "blog.article", article: Article.Serialize.Complete.serialize(mod) };
+  /*const payload = { type: "blog.article", article: Article.Serialize.Complete.serialize(mod) };
   Pkg.Queue.send(
     ArticleConfig.StaticContentQueueID,
     JSON.stringify(payload),
     cxt
-  );
+  );*/
   return mod;
 };
 
