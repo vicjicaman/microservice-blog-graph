@@ -671,10 +671,10 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@nebulario/microservice-auth-common@1.70.1-master":
-  version "1.70.1-master"
-  resolved "https://registry.yarnpkg.com/@nebulario/microservice-auth-common/-/microservice-auth-common-1.70.1-master.tgz#709f1bd7ac152e00d237d0e2de2aadd0625a04a3"
-  integrity sha512-qqq/Dfu0EasDpr5MGYhqclUsXG+McEqCGBx71131+KHtZZl6hgSFmX/BMdcEoJebP4tODKze9doCjL2WGMZBSA==
+"@nebulario/microservice-auth-common@1.70.2-master":
+  version "1.70.2-master"
+  resolved "https://registry.yarnpkg.com/@nebulario/microservice-auth-common/-/microservice-auth-common-1.70.2-master.tgz#b43980e9c82da3234c39a88ef47797cddc8a0813"
+  integrity sha512-CdgYPnS+92rSneUxYhCpxG82m49hIZI3eyNkZPDz6IQMwZopzUb2YlL6rIRuXe/7UWtRf7EHVGK4U3bh0t51xw==
   dependencies:
     "@babel/runtime" "^7.6.0"
     "@babel/runtime-corejs3" "^7.6.0"
@@ -686,16 +686,18 @@
     redis "^2.8.0"
     redis-parser "^3.0.0"
 
-"@nebulario/microservice-graph-common@1.70.3-master":
-  version "1.70.3-master"
-  resolved "https://registry.yarnpkg.com/@nebulario/microservice-graph-common/-/microservice-graph-common-1.70.3-master.tgz#81a94c312254215e8d83a4fea4de54373694a324"
-  integrity sha512-PfQ0GCgFXhSCacAFeSkKvX0Qjb2zvilt6G7ei6HrW5/jwCXvFOtHNuwHopz11VjCXwNintP27qRm1zwjsfN0Bg==
+"@nebulario/microservice-graph-common@1.70.4-master":
+  version "1.70.4-master"
+  resolved "https://registry.yarnpkg.com/@nebulario/microservice-graph-common/-/microservice-graph-common-1.70.4-master.tgz#2bfe94eb59d0d25ef0021dee0159e61087603c5f"
+  integrity sha512-ksJZIQzbh0NER6m5n7FEdxhvDIrIOr1zPB34oeAKZwd7umnoXtEg9cxvf8n1Q9piEosPT3h3TuzxRbydtuGt3Q==
   dependencies:
     "@babel/runtime" "^7.6.0"
     "@babel/runtime-corejs3" "^7.6.0"
     "@nebulario/microservice-utils" "1.70.0-master"
     amqplib "^0.5.5"
     async-redis "^1.1.7"
+    redis "^2.8.0"
+    redis-lock "^0.1.4"
     uuid "^3.3.3"
 
 "@nebulario/microservice-logger@1.70.1-master":
@@ -4116,6 +4118,11 @@ redis-errors@^1.0.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/redis-errors/-/redis-errors-1.2.0.tgz#eb62d2adb15e4eaf4610c04afe1529384250abad"
   integrity sha1-62LSrbFeTq9GEMBK/hUpOEJQq60=
+
+redis-lock@^0.1.4:
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/redis-lock/-/redis-lock-0.1.4.tgz#e83590bee22b5f01cdb65bfbd88d988045356272"
+  integrity sha512-7/+zu86XVQfJVx1nHTzux5reglDiyUCDwmW7TSlvVezfhH2YLc/Rc8NE0ejQG+8/0lwKzm29/u/4+ogKeLosiA==
 
 redis-parser@^2.6.0:
   version "2.6.0"
